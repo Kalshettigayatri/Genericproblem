@@ -1,48 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 
-class GenericMaxFinder
+class GenericMaxFinder<T> where T : IComparable<T>
 {
-    public static T FindMax<T>(IEnumerable<T> collection) where T : IComparable<T>
+    private T variable1;
+    private T variable2;
+    private T variable3;
+
+    public GenericMaxFinder(T var1, T var2, T var3)
     {
-        if (collection == null)
+        variable1 = var1;
+        variable2 = var2;
+        variable3 = var3;
+    }
+
+    private T FindMax(T a, T b, T c)
+    {
+        T max = a;
+        if (b.CompareTo(max) > 0)
         {
-            throw new ArgumentNullException(nameof(collection), "Collection must not be null");
+            max = b;
         }
-
-        T max = default(T);
-        bool isFirstElement = true;
-
-        foreach (T element in collection)
+        if (c.CompareTo(max) > 0)
         {
-            if (isFirstElement || element.CompareTo(max) > 0)
-            {
-                max = element;
-                isFirstElement = false;
-            }
+            max = c;
         }
-
-        if (isFirstElement)
-        {
-            throw new ArgumentException("Collection must not be empty");
-        }
-
         return max;
     }
 
+    public T TestMaximum()
+    {
+        return FindMax(variable1, variable2, variable3);
+    }
+}
+
+class Program
+{
     static void Main(string[] args)
     {
         // Example usage
-        List<int> integers = new List<int> { 3, 7, 1, 9, 4 };
-        int maxInt = FindMax(integers);
-        Console.WriteLine($"Max Integer: {maxInt}");
+        GenericMaxFinder<int> intFinder = new GenericMaxFinder<int>(3, 7, 1);
+        Console.WriteLine($"Max Integer: {intFinder.TestMaximum()}");
 
-        List<double> doubles = new List<double> { 2.5, 1.8, 3.7, 2.0, 3.0 };
-        double maxDouble = FindMax(doubles);
-        Console.WriteLine($"Max Double: {maxDouble}");
+        GenericMaxFinder<double> doubleFinder = new GenericMaxFinder<double>(2.5, 1.8, 3.7);
+        Console.WriteLine($"Max Double: {doubleFinder.TestMaximum()}");
 
-        List<string> strings = new List<string> { "apple", "banana", "cherry", "date" };
-        string maxString = FindMax(strings);
-        Console.WriteLine($"Max String: {maxString}");
+        GenericMaxFinder<string> stringFinder = new GenericMaxFinder<string>("apple", "banana", "cherry");
+        Console.WriteLine($"Max String: {stringFinder.TestMaximum()}");
     }
 }
